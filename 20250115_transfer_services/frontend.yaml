@@ -1,0 +1,48 @@
+# ---
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: frontend-namespace
+# ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  # namespace: frontend-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: docker.io/library/frontend:latest
+          imagePullPolicy: Never  # use local image only
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld-page # service name for minikube to access
+  labels:
+    app: frontend
+    environment: develop
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30002 # fixed port number
+  selector:
+    app: frontend
+---

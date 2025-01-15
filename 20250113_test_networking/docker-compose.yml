@@ -1,0 +1,73 @@
+version: "3"
+services:
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - 80:80
+    networks:
+      - hello-network
+  
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - 2345:1234
+    networks:
+      - hello-network
+    # environment:
+    #   - DATABASE_URL=postgresql://hello_fastapi:hello_fastapi@db/hello_fastapi_dev  # username and password for db service
+    # depends_on:
+    #   - db
+  
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command: 
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    # ports:
+    #   - 9090:9090
+    networks:
+      - hello-network
+  
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+    env_file:
+      - ./grafana/config.monitoring
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    networks:
+      - hello-network
+
+# for persisting data (docker volume ls)  
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
+
+  # db:
+  #   image: postgres:13.1-alpine
+  #   volumes:
+  #     - ./db:/var/lib/postgresql/data/
+  #   environment:
+  #     - POSTGRES_USER=hello_fastapi
+  #     - POSTGRES_PASSWORD=hello_fastapi
+  #     - POSTGRES_DB=hello_fastapi_dev
+  #   ports:
+  #     - 5432:5432
+  #   networks:
+  #     - hello-network
+
+networks:
+  default:
+    name: my-network
+  hello-network:
+    name: hello-network

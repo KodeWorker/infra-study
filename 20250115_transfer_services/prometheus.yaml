@@ -1,0 +1,97 @@
+# ---
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: monitoring
+# ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  # namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:latest
+          imagePullPolicy: Never  # use local image only
+          ports:
+            - containerPort: 9090
+              protocol: TCP
+          args:
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.path=prometheus_data/
+          volumeMounts:
+            - mountPath: /etc/prometheus/prometheus.yml
+              name: prometheus-config-volume
+              subPath: prometheus.yml # key in data
+            - mountPath: prometheus_data/
+              name: prometheus-data-volume
+      restartPolicy: Always
+      volumes:
+        - name: prometheus-config-volume
+          configMap:
+            name: prometheus-config
+        - name: prometheus-data-volume
+          persistentVolumeClaim:
+            claimName: prometheus-data
+      dnsPolicy: ClusterFirst
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-page # service name for minikube to access
+  labels:
+    app: prometheus
+    environment: develop
+spec:
+  # type: NodePort
+  ports:
+    - protocol: TCP
+      port: 9090
+      # expose temporary port for testing
+      # targetPort: 9090
+      # nodePort: 30003 # fixed port number
+  selector:
+    app: prometheus
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |+
+    global:
+      scrape_interval: 5s
+    scrape_configs:
+      - job_name: 'prometheus'
+        scrape_interval: 15s
+        metrics_path: /metrics # /prometheus/metrics not working
+        static_configs:
+          - targets: ['prometheus-page:9090'] # self monitoring
+      - job_name: 'fastapi-app'
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['helloworld-backend:2345']
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-data
+  labels:
+    vol: prometheus-storage
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+---

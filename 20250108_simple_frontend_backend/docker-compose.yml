@@ -1,0 +1,23 @@
+version: "3"
+services:
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - 80:80
+    networks:
+      - backend-network
+  
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - 2345:1234
+    networks:
+      - backend-network
+      
+networks:
+  default:
+    name: my-network
+  backend-network:
+    name: backend-network
