@@ -274,6 +274,8 @@ metadata:
   name: grafana
 spec:
   type: LoadBalancer
+  externalIPs:
+    - 192.168.49.2
   ports:
     - port: 3000
       protocol: TCP
