@@ -1,0 +1,48 @@
+# ---
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: backend-namespace
+# ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  # namespace: backend-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: docker.io/library/backend:latest
+          imagePullPolicy: Never # use local image only
+          ports:
+            - containerPort: 1234
+              protocol: TCP
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld-backend # service name for minikube to access
+  labels:
+    app: backend
+    environment: develop
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 2345
+      targetPort: 1234
+      nodePort: 30001 # fixed port number
+  selector:
+    app: backend
+---

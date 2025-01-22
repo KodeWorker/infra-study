@@ -1,0 +1,11 @@
+crictl rmi docker.io/grafana/grafana:11.2.2-security-01
+crictl rmi docker.io/istio/examples-bookinfo-details-v1:1.20.2
+crictl rmi docker.io/istio/examples-bookinfo-productpage-v1:1.20.2
+crictl rmi docker.io/istio/examples-bookinfo-ratings-v1:1.20.2
+crictl rmi docker.io/istio/examples-bookinfo-reviews-v1:1.20.2
+crictl rmi docker.io/istio/examples-bookinfo-reviews-v2:1.20.2
+crictl rmi docker.io/istio/examples-bookinfo-reviews-v3:1.20.2
+crictl rmi docker.io/jaegertracing/all-in-one:1.58
+crictl rmi docker.io/prom/prometheus:v2.54.1
+crictl rmi ghcr.io/prometheus-operator/prometheus-config-reloader:v0.76.0
+crictl rmi quay.io/kiali/kiali:v2.0

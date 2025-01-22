@@ -1,0 +1,3 @@
+fastapi[standard]
+prometheus-fastapi-instrumentator
+prometheus-client

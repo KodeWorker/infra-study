@@ -1,0 +1,3 @@
+*.tar.gz
+custom-resources.yaml
+tigera-operator.yaml
