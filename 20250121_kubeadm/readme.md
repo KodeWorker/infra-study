@@ -17,6 +17,15 @@
     - kubectl get svc # see expoed port
     - curl localhost:32492
 
+5. reboot 之後無法連到k8s-api-server?
+    - status kubelet -> error: open /var/lib/kubelet/config.yaml: no such file or directory
+    - journalctl -u kubelet -> failed to run Kubelet: running with swap on is not supported
+    - systemctl --type swap --all
+    > UNIT               LOAD   ACTIVE   SUB  DESCRIPTION   
+      dev-nvme0n1p3.swap loaded inactive dead Swap Partition
+    - systemctl mask dev-nvme0n1p3.swap
+
+
 ### Deploy a backend service
 
 1. setup buildkit for nerdctl

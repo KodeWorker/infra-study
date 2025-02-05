@@ -45,5 +45,9 @@
     see images and rm: crictl image ls (specify tag)
 
 
+- git remote set-url origin https://<my-personal-token>@github.com/KodeWorker/infra-study.git
+- check selected repo and content permission (RW)
+
 ## Reference
 1. https://istio.io/latest/docs/setup/getting-started/
+2. https://stackoverflow.com/questions/68833701/how-do-i-set-up-my-local-git-repo-to-use-the-new-personal-access-token-i-just-cr

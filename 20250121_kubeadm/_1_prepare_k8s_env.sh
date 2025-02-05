@@ -35,9 +35,16 @@ timeout: 10
 debug: false
 EOF
 
+# reset iptables
+sudo ufw disable
+sudo iptables -L
+sudo iptables -F INPUT
+sudo iptables -F FORWARD
+sudo iptables -F OUTPUT
+
 # remove local kubeconfig
 rm -rf $HOME/.kube
-rm /etc/cni/net.d/*
+rm -rf /etc/cni/net.d/*
 rm /etc/sysctl.d/kubernetes.conf
 rm /etc/modules-load.d/containerd.conf
 rm tigera-operator.yaml custom-resources.yaml
@@ -72,7 +79,7 @@ kubeadm init \
       --v 5 \
       --ignore-preflight-errors=all
 
-# Set up local kubeconfig for single-node cluster
+# Set up local kubeconfig for single-node cluster/etc/fstab
 # export KUBECONFIG=/etc/kubernetes/admin.conf
 mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
