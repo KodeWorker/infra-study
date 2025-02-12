@@ -1,0 +1,66 @@
+
+services:
+
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - 2345:1234
+    networks:
+      - apt-network
+    env_file:
+      - ./cache.env
+      - ./db.env
+      - ./minio.env
+
+  # redis cache
+  cache:
+    image: redis:6.2-alpine
+    container_name: cache
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes: 
+      - cache:/data
+    networks:
+      - apt-network
+
+  # PostgreSQL Database
+  db:
+    image: postgres:13-alpine
+    container_name: db
+    restart: always   
+    env_file:
+      - ./db.env   
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - apt-network
+
+  # Minio
+  minio:
+    image: minio/minio
+    container_name: minio
+    restart: always
+    command: server --console-address ":9001"
+    volumes:
+      - minio:/mnt/data
+    networks:
+      - apt-network
+    env_file:
+      - ./minio.env
+
+  # RabbitMQ
+
+networks:
+
+  default:
+    name: default-network
+
+  apt-network:
+    name: apt-network
+
+volumes:
+
+  cache: {}
+  db: {}
+  minio: {}

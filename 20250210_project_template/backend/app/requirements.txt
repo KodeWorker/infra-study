@@ -1,0 +1,7 @@
+fastapi[standard]
+prometheus-fastapi-instrumentator
+prometheus-client
+redis[hiredis]
+psycopg2-binary
+minio
+pika

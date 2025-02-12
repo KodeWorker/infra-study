@@ -1,9 +1,7 @@
 # Install nerdctl
-wget https://github.com/containerd/nerdctl/releases/download/v2.0.3/nerdctl-2.0.3-linux-amd64.tar.gz
-mkdir nerdctl-2.0.3-linux-amd64
-tar -xvf nerdctl-2.0.3-linux-amd64.tar.gz -C nerdctl-2.0.3-linux-amd64
-mv nerdctl-2.0.3-linux-amd64/nerdctl /usr/local/bin/
-rm nerdctl-2.0.3-linux-amd64.tar.gz && rm -rf nerdctl-2.0.3-linux-amd64
+wget https://github.com/containerd/nerdctl/releases/download/v2.0.3/nerdctl-full-2.0.3-linux-amd64.tar.gz
+tar -xvf nerdctl-full-2.0.3-linux-amd64.tar.gz -C /usr/local
+rm nerdctl-full-2.0.3-linux-amd64.tar.gz
 
 # Install BuildKit
 wget https://github.com/moby/buildkit/releases/download/v0.19.0/buildkit-v0.19.0.linux-amd64.tar.gz
